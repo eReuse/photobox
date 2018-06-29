@@ -53,15 +53,14 @@ while True:
         url = input()
         print('Read text: {}'.format(url))
         try:
-            code = int(URL(url).path_parts[-1])
-            if config.code_min < code < config.code_max:
-                raise ValueError()
+            code = int(url[url.rfind('-')+1:])
         except ValueError:
             print('QR is not a valid Devicehub URL.')
             Led.ledError()
             code = 0
             state = "QR"
         else:
+            print('QR is {}'.format(code))
             state = 'SCAN' #Pasa al estado de Scan.
     elif state == 'SCAN':  #Si no esta en estado QR, entra en estado SCAN.
 
