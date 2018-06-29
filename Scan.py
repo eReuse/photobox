@@ -8,7 +8,7 @@ import waitInput
 import takePicture
 import Thunderborg_moveStepper as ThunderBorg_moveStepper
 import Led
-
+from boltons.urlutils import URL
 
 code = 0                #Variable que contiene el codigo recibido por el Scanner QR.
 state = 'QR'            #Declara una variable de estado, con un estado QR.
@@ -50,24 +50,19 @@ while True:
         tcflush(sys.stdin, TCIFLUSH)
 
         #ESTO HAY QUE CAMBIARLO PARA QUE NO SEA UN NUMERO, SEA UNA URL.
-        code = input()
-        if code.isdigit():
-            code = int(code)
-
-            if code > config.code_min and code < config.code_max:
-                print("Received code: " + str(code)) #Recibe el codigo y lo imprime en el termimal.
-                state = 'SCAN' #Pasa al estado de Scan.
-            else:
-                print("1 QR code ERROR!!") #Si hay algun error, imprime en la terminal que hubo un error.
-                Led.ledError()
-                code = 0
-                state = "QR"             #Reinicia la applicacion y vuelve al primer estado (QR).
-        else:
-            print("QR code error!!!")       #Da un error si el codigo no es un digito y lo imprime por terminal.
+        url = input()
+        print('Read text: {}'.format(url))
+        try:
+            code = int(URL(url).path_parts[-1])
+            if config.code_min < code < config.code_max:
+                raise ValueError()
+        except ValueError:
+            print('QR is not a valid Devicehub URL.')
             Led.ledError()
             code = 0
             state = "QR"
-
+        else:
+            state = 'SCAN' #Pasa al estado de Scan.
     elif state == 'SCAN':  #Si no esta en estado QR, entra en estado SCAN.
 
         # led 2 on, led 1 off
