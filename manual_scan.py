@@ -21,4 +21,4 @@ while True:
             pic_name = '{}-{}.jpg'.format(code, i)
             print('Press button to take picture {}'.format(pic_name))
             buttonPressed = waitInput.click()
-            camera.capture(Path.home() / 'Pictures' / pic_name)
+            camera.capture(str(Path.home() / 'Pictures' / pic_name))
